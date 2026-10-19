@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
+  BotMessageSquare,
   CalendarDays,
   CalendarRange,
   ChartColumn,
@@ -231,9 +232,7 @@ export function BrandMark({ size = 28 }: { size?: number }) {
       className="inline-flex shrink-0 items-center justify-center rounded-[8px] bg-gradient-to-b from-brand-400 to-brand-600 shadow-[inset_0_1px_0_rgb(255_255_255/0.25),0_1px_2px_rgb(0_0_0/0.3)]"
       style={{ width: size, height: size }}
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" style={{ width: size * 0.6, height: size * 0.6 }}>
-        <path d="M13 2 4.5 13.5H12L11 22l8.5-11.5H12L13 2z" />
-      </svg>
+      <BotMessageSquare size={size * 0.6} className="text-white" strokeWidth={2.2} />
     </span>
   );
 }
