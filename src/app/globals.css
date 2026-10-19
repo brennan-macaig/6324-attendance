@@ -1,0 +1,276 @@
+@import "tailwindcss";
+
+@custom-variant dark (@media (prefers-color-scheme: dark));
+@custom-variant fullscreen (&:fullscreen);
+
+/*
+ * Design tokens. Defined once here and consumed through Tailwind utilities
+ * (bg-surface, text-ink-2, border-line, bg-accent, shadow-card, rounded-card, ...).
+ *
+ * - brand-*: static navy/blue scale (same in both modes). brand-950 is the header.
+ * - Semantic tokens (canvas, surface, ink, line, accent, status) swap per mode
+ *   via the CSS variables in :root below.
+ */
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, "Helvetica Neue", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  --color-brand-50: #eef3fe;
+  --color-brand-100: #dce6fd;
+  --color-brand-200: #c0d2fb;
+  --color-brand-300: #94b3f7;
+  --color-brand-400: #6690f1;
+  --color-brand-500: #3f6fe6;
+  --color-brand-600: #2f62db;
+  --color-brand-700: #244dbb;
+  --color-brand-800: #1f3f94;
+  --color-brand-900: #172f5c;
+  --color-brand-950: #0b1f3a;
+
+  /* Solid fills for primary-weight status buttons (white text >= 5:1) */
+  --color-success-solid: #15803d;
+  --color-success-solid-hover: #166534;
+
+  --radius-control: 0.5rem;
+  --radius-card: 0.75rem;
+  --radius-panel: 1rem;
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-hover: var(--surface-hover);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-ring: var(--ring);
+
+  --color-header: var(--header);
+  --color-header-line: var(--header-line);
+  --color-header-ink: var(--header-ink);
+  --color-header-active: var(--header-active);
+
+  --color-success: var(--success);
+  --color-success-ink: var(--success-ink);
+  --color-success-soft: var(--success-soft);
+  --color-success-line: var(--success-line);
+  --color-warning: var(--warning);
+  --color-warning-ink: var(--warning-ink);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-line: var(--warning-line);
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-danger-ink: var(--danger-ink);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-line: var(--danger-line);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-neutral-ink: var(--neutral-ink);
+  --color-neutral-line: var(--neutral-line);
+
+  --shadow-xs: var(--shadow-xs-value);
+  --shadow-card: var(--shadow-card-value);
+  --shadow-pop: var(--shadow-pop-value);
+}
+
+:root {
+  color-scheme: light;
+
+  --canvas: #f5f7fa;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --surface-hover: #f3f6fa;
+  --line: #e3e8ef;
+  --line-strong: #cbd3de;
+  --ink: #0f172a;
+  --ink-2: #475569;
+  --ink-3: #5d6b80;
+
+  --accent: #2f62db; /* brand-600: buttons, selected states (white text 5.4:1) */
+  --accent-hover: #244dbb;
+  --accent-soft: #eef3fe;
+  --accent-ink: #244dbb; /* links on light surfaces */
+  --ring: #3f6fe6;
+
+  --header: #0b1f3a;
+  --header-line: #18315a;
+  --header-ink: #c3cfe2; /* 10.5:1 on header */
+  --header-active: #6690f1;
+
+  --success: #16a34a; /* dots/marks */
+  --success-ink: #067647;
+  --success-soft: #ecfdf3;
+  --success-line: #abefc6;
+  --warning: #f79009;
+  --warning-ink: #93370d;
+  --warning-soft: #fffaeb;
+  --warning-line: #fedf89;
+  --danger: #c8321f;
+  --danger-hover: #a92a1a;
+  --danger-ink: #b42318;
+  --danger-soft: #fef3f2;
+  --danger-line: #fecdca;
+  --neutral-soft: #f1f4f8;
+  --neutral-ink: #344054;
+  --neutral-line: #dfe4eb;
+
+  --shadow-xs-value: 0 1px 2px rgb(15 23 42 / 0.05);
+  --shadow-card-value: 0 1px 2px rgb(15 23 42 / 0.04), 0 1px 3px rgb(15 23 42 / 0.06);
+  --shadow-pop-value: 0 12px 32px -8px rgb(15 23 42 / 0.18), 0 4px 8px -4px rgb(15 23 42 / 0.08);
+
+  /* Chart tokens (src/components/charts.tsx). Single series = brand blue, validated
+     with the dataviz palette validator against the card surface in each mode. */
+  --chart-surface: var(--surface);
+  --chart-series-1: #2f62db;
+  --chart-series-1-hover: #244dbb;
+  --chart-text: var(--ink);
+  --chart-muted: var(--ink-3);
+  --chart-grid: #edf0f5;
+  --chart-axis: #cbd3de;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --canvas: #0a101c;
+    --surface: #111a2b;
+    --surface-2: #0e1626;
+    --surface-hover: #16223a;
+    --line: #1f2b40;
+    --line-strong: #2d3b54;
+    --ink: #e6ebf2;
+    --ink-2: #a7b1c2;
+    --ink-3: #8691a4;
+
+    --accent: #2f62db;
+    --accent-hover: #3f6fe6;
+    --accent-soft: rgb(63 111 230 / 0.16);
+    --accent-ink: #8eb0f9;
+    --ring: #6690f1;
+
+    --header: #0b1f3a;
+    --header-line: #18315a;
+
+    --success: #22c55e;
+    --success-ink: #75e0a7;
+    --success-soft: rgb(34 197 94 / 0.12);
+    --success-line: rgb(34 197 94 / 0.3);
+    --warning: #fdb022;
+    --warning-ink: #fec84b;
+    --warning-soft: rgb(247 144 9 / 0.12);
+    --warning-line: rgb(247 144 9 / 0.32);
+    --danger: #d92d20;
+    --danger-hover: #f04438;
+    --danger-ink: #fda29b;
+    --danger-soft: rgb(240 68 56 / 0.12);
+    --danger-line: rgb(240 68 56 / 0.32);
+    --neutral-soft: rgb(148 163 184 / 0.12);
+    --neutral-ink: #cbd3de;
+    --neutral-line: rgb(148 163 184 / 0.22);
+
+    --shadow-xs-value: 0 1px 2px rgb(0 0 0 / 0.3);
+    --shadow-card-value: 0 1px 2px rgb(0 0 0 / 0.3), 0 0 0 1px rgb(255 255 255 / 0.02);
+    --shadow-pop-value: 0 16px 40px -8px rgb(0 0 0 / 0.6), 0 4px 8px -4px rgb(0 0 0 / 0.4);
+
+    --chart-series-1: #5b8cf0;
+    --chart-series-1-hover: #7ea6f8;
+    --chart-grid: #1a2539;
+    --chart-axis: #2d3b54;
+  }
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  letter-spacing: -0.005em;
+}
+
+/* Tabular figures for aligned numeric columns only. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Native <details> disclosure: no default marker. */
+summary::-webkit-details-marker {
+  display: none;
+}
+summary {
+  list-style: none;
+}
+
+/* Native date/time pickers inherit the scheme */
+input[type="date"],
+input[type="datetime-local"] {
+  min-height: 2.25rem;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes soft-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  80%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.35s var(--ease-out-soft) both;
+}
+.animate-pop-in {
+  animation: pop-in 0.16s var(--ease-out-soft) both;
+}
+.animate-soft-ping {
+  animation: soft-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-pop-in,
+  .animate-soft-ping {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}

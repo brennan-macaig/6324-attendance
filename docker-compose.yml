@@ -1,0 +1,37 @@
+# Local Postgres + Neon's HTTP proxy, so the app can use the same
+# @neondatabase/serverless HTTP driver it uses in production.
+#
+#   docker compose up -d
+#   DATABASE_URL="postgres://postgres:postgres@db.localtest.me:5432/main"
+#
+# (db.localtest.me resolves to 127.0.0.1; src/db/index.ts routes HTTP queries
+# for that host to the proxy on :4444. drizzle-kit and the seed script connect
+# directly over TCP on :5432.)
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: main
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      retries: 20
+
+  neon-proxy:
+    image: ghcr.io/timowilhelm/local-neon-http-proxy:main
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@postgres:5432/main
+    ports:
+      - "4444:4444"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
