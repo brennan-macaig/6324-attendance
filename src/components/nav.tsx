@@ -17,6 +17,7 @@ export async function Nav() {
     if (hasRole(user, "admin")) {
       links.push({ href: "/admin/roster", label: "Roster", icon: "roster" });
       links.push({ href: "/admin/seasons", label: "Seasons", icon: "seasons" });
+      links.push({ href: "/admin/settings", label: "Settings", icon: "settings" });
     }
   }
   return (

@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  Palette,
   QrCode,
   UserRound,
   Users,
@@ -33,6 +34,7 @@ const ICONS = {
   hours: ChartColumn,
   roster: UsersRound,
   seasons: CalendarRange,
+  settings: Palette,
 } satisfies Record<string, LucideIcon>;
 
 type NavUser = { name: string; email: string; role: string; image: string | null };

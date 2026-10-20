@@ -16,6 +16,9 @@ import {
 export const roleEnum = pgEnum("role", ["student", "mentor", "admin"]);
 export type Role = (typeof roleEnum.enumValues)[number];
 
+export const themeEnum = pgEnum("theme", ["navy", "teal", "green", "purple", "red", "orange"]);
+export type Theme = (typeof themeEnum.enumValues)[number];
+
 const tsz = (name: string) => timestamp(name, { withTimezone: true, mode: "date" });
 
 /** Everyone who can sign in (students, mentors, admins). Roster == this table. */
@@ -103,7 +106,14 @@ export const checkins = pgTable(
   ],
 );
 
+/** Single row (id = "global"): site-wide settings editable by admins. */
+export const settings = pgTable("settings", {
+  id: text("id").primaryKey().default("global"),
+  theme: themeEnum("theme").notNull().default("navy"),
+});
+
 export type User = typeof users.$inferSelect;
 export type Season = typeof seasons.$inferSelect;
 export type Meeting = typeof meetings.$inferSelect;
 export type Checkin = typeof checkins.$inferSelect;
+export type Settings = typeof settings.$inferSelect;

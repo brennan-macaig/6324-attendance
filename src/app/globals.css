@@ -192,6 +192,113 @@
   }
 }
 
+/*
+ * Alternate team colorways (admin-selectable, src/lib/theme.ts). Each theme
+ * replaces the brand-* scale plus the header/accent/ring/chart tokens that
+ * derive from it; everything else (canvas, surface, ink, success/warning/
+ * danger) is shared across themes. Applied via [data-theme] on <html>, which
+ * is why these come after the dark-mode block: same specificity, later wins.
+ */
+[data-theme="teal"] {
+  --color-brand-50: #eafbf8;
+  --color-brand-100: #d2f5ef;
+  --color-brand-200: #a6ebe0;
+  --color-brand-300: #70d8c9;
+  --color-brand-400: #3fbfae;
+  --color-brand-500: #22a194;
+  --color-brand-600: #16827a;
+  --color-brand-700: #126864;
+  --color-brand-800: #0f5450;
+  --color-brand-900: #0b3f3c;
+  --color-brand-950: #06282a;
+}
+
+[data-theme="green"] {
+  --color-brand-50: #eafbf1;
+  --color-brand-100: #cdf5de;
+  --color-brand-200: #9ee8bf;
+  --color-brand-300: #68d49b;
+  --color-brand-400: #3cb87b;
+  --color-brand-500: #239e63;
+  --color-brand-600: #15804f;
+  --color-brand-700: #116640;
+  --color-brand-800: #0f5235;
+  --color-brand-900: #0b3f2a;
+  --color-brand-950: #072a1c;
+}
+
+[data-theme="purple"] {
+  --color-brand-50: #f3effd;
+  --color-brand-100: #e5daf9;
+  --color-brand-200: #ccb6f3;
+  --color-brand-300: #ab87ea;
+  --color-brand-400: #8c5fe0;
+  --color-brand-500: #7140cf;
+  --color-brand-600: #5b2bb8;
+  --color-brand-700: #48219a;
+  --color-brand-800: #381a79;
+  --color-brand-900: #2a1459;
+  --color-brand-950: #1a0d38;
+}
+
+[data-theme="red"] {
+  --color-brand-50: #fdeeee;
+  --color-brand-100: #fbd6d6;
+  --color-brand-200: #f6aaaa;
+  --color-brand-300: #ee7a7a;
+  --color-brand-400: #e24f4f;
+  --color-brand-500: #cc2f2f;
+  --color-brand-600: #ab1f1f;
+  --color-brand-700: #8a1818;
+  --color-brand-800: #6e1414;
+  --color-brand-900: #541010;
+  --color-brand-950: #350a0a;
+}
+
+[data-theme="orange"] {
+  --color-brand-50: #fef3e7;
+  --color-brand-100: #fce2c2;
+  --color-brand-200: #f8c583;
+  --color-brand-300: #f2a048;
+  --color-brand-400: #e07f1d;
+  --color-brand-500: #b8640f;
+  --color-brand-600: #96500c;
+  --color-brand-700: #78400d;
+  --color-brand-800: #603410;
+  --color-brand-900: #4a280f;
+  --color-brand-950: #301a0a;
+}
+
+[data-theme="teal"],
+[data-theme="green"],
+[data-theme="purple"],
+[data-theme="red"],
+[data-theme="orange"] {
+  --header: var(--color-brand-950);
+  --header-line: var(--color-brand-900);
+  --header-ink: var(--color-brand-200);
+  --header-active: var(--color-brand-400);
+
+  --accent: var(--color-brand-600);
+  --accent-hover: var(--color-brand-700);
+  --accent-soft: var(--color-brand-50);
+  --accent-ink: var(--color-brand-700);
+  --ring: var(--color-brand-500);
+
+  --chart-series-1: var(--color-brand-600);
+  --chart-series-1-hover: var(--color-brand-700);
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="teal"],
+  [data-theme="green"],
+  [data-theme="purple"],
+  [data-theme="red"],
+  [data-theme="orange"] {
+    --accent-ink: var(--color-brand-300);
+  }
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;

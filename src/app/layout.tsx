@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { db } from "@/db";
+import { getTheme, THEMES } from "@/lib/theme";
 import { Nav } from "@/components/nav";
 
 // Every page is per-user and reads the session + database: never prerender.
@@ -11,16 +13,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  // The app header is navy in both color schemes.
-  themeColor: "#0b1f3a",
-};
+// The header color (and so the browser chrome color) depends on the admin-chosen theme.
+export async function generateViewport(): Promise<Viewport> {
+  const theme = await getTheme(db);
+  const header = THEMES.find((t) => t.id === theme)?.header ?? THEMES[0].header;
+  return { width: "device-width", initialScale: 1, themeColor: header };
+}
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const theme = await getTheme(db);
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className="h-full antialiased" data-theme={theme === "navy" ? undefined : theme}>
       <body className="flex min-h-full flex-col overflow-x-clip bg-canvas text-ink">
         <a
           href="#main"
