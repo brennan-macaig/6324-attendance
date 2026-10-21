@@ -17,6 +17,7 @@ type KioskData =
         id: string;
         name: string;
         image: string | null;
+        role: string;
         checkedInAt: string;
         checkedOutAt: string | null;
       }[];
@@ -73,6 +74,8 @@ export function KioskClient({ meetingId, teamName, timeZone }: { meetingId: stri
   const remaining = live ? Math.max(0, live.windowEndsAt - (now + skew)) : 0;
   const here = live?.attendees.filter((a) => !a.checkedOutAt) ?? [];
   const leftCount = (live?.attendees.length ?? 0) - here.length;
+  const mentorsHere = here.filter((a) => a.role !== "student").length;
+  const studentsHere = here.length - mentorsHere;
   const fmt = new Intl.DateTimeFormat("en-US", { timeZone, hour: "numeric", minute: "2-digit" });
   const urgent = remaining > 0 && remaining < 5000;
 
@@ -157,9 +160,16 @@ export function KioskClient({ meetingId, teamName, timeZone }: { meetingId: stri
               <h2 className="text-2xl font-semibold tracking-[-0.01em] md:text-3xl fullscreen:text-4xl">Here now</h2>
               <p className="mt-1 text-lg text-header-ink fullscreen:text-xl">{leftCount > 0 ? `${leftCount} already left` : "Welcome in!"}</p>
             </div>
-            <span className="text-7xl font-semibold leading-[0.85] tracking-[-0.04em] md:text-8xl fullscreen:text-[9rem]" aria-live="polite">
-              {here.length}
-            </span>
+            <div className="text-right">
+              <span className="block text-7xl font-semibold leading-[0.85] tracking-[-0.04em] md:text-8xl fullscreen:text-[9rem]" aria-live="polite">
+                {here.length}
+              </span>
+              {here.length > 0 ? (
+                <p className="tabular mt-1 text-base text-header-ink fullscreen:text-lg">
+                  {studentsHere} {studentsHere === 1 ? "student" : "students"} · {mentorsHere} {mentorsHere === 1 ? "mentor" : "mentors"}
+                </p>
+              ) : null}
+            </div>
           </div>
           <ul className="-mr-2 mt-5 grid flex-1 auto-rows-min grid-cols-1 content-start gap-2.5 overflow-y-auto pr-2 sm:grid-cols-2 [scrollbar-width:thin]">
             {here.map((a) => (

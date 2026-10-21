@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "@/db";
-import { meetings } from "@/db/schema";
+import { meetings, meetingTypeEnum } from "@/db/schema";
 import { fail, formObject, guard, ok, revalidateAll, type ActionState } from "@/lib/actions";
 import { closeMeeting, getMeeting, openMeeting } from "@/lib/attendance";
 import { requireRole } from "@/lib/authz";
@@ -19,11 +19,11 @@ const Id = z.object({ meetingId: z.uuid() });
 export async function startMeetingAction(_prev: ActionState, fd: FormData): Promise<ActionState> {
   return guard(async () => {
     const user = await requireRole("mentor");
-    const { notes, goToKiosk } = z
-      .object({ notes: z.string().max(500).optional(), goToKiosk: z.string().optional() })
+    const { notes, type, goToKiosk } = z
+      .object({ notes: z.string().max(500).optional(), type: z.enum(meetingTypeEnum.enumValues).optional(), goToKiosk: z.string().optional() })
       .parse(formObject(fd));
     await runSweep();
-    const res = await openMeeting(db, { openedBy: user.id, notes: notes?.trim() || null, cutoff: env.dailyCutoff });
+    const res = await openMeeting(db, { openedBy: user.id, notes: notes?.trim() || null, type, cutoff: env.dailyCutoff });
     if (res.status === "no_current_season") return fail("No current season. An admin needs to create one first.");
     if (res.status === "past_cutoff") return fail(`Meetings can't be started after ${formatCutoff(env.dailyCutoff)}. Check-in is closed for today.`);
     revalidateAll();
@@ -57,13 +57,14 @@ export async function updateMeetingAction(_prev: ActionState, fd: FormData): Pro
       .object({
         meetingId: z.uuid(),
         notes: z.string().max(500).optional(),
+        type: z.enum(meetingTypeEnum.enumValues).optional(),
         startsAt: z.string().optional(),
         endsAt: z.string().optional(),
       })
       .parse(formObject(fd));
     const meeting = await getMeeting(db, input.meetingId);
     if (!meeting) return fail("Meeting not found.");
-    const patch: Partial<typeof meetings.$inferInsert> = { notes: input.notes?.trim() || null };
+    const patch: Partial<typeof meetings.$inferInsert> = { notes: input.notes?.trim() || null, type: input.type ?? meeting.type };
     if (user.role === "admin" && input.startsAt) {
       const tz = env.teamTimezone;
       const startsAt = fromDateTimeLocalValue(input.startsAt, tz);

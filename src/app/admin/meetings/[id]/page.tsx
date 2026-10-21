@@ -8,6 +8,7 @@ import { hasRole, requirePageUser } from "@/lib/authz";
 import { env } from "@/lib/env";
 import { checkinDurationMs, elapsedMs, formatDuration, formatHours } from "@/lib/hours";
 import { displayName } from "@/lib/names";
+import { MEETING_TYPES, meetingTypeInfo } from "@/lib/meeting-type";
 import { activeRoster, getSeason, meetingAttendees, userNames } from "@/lib/queries";
 import { formatDate, formatTime, toDateTimeLocalValue } from "@/lib/time";
 import { ActionForm, SubmitButton } from "@/components/action-form";
@@ -74,6 +75,7 @@ export default async function MeetingPage({ params }: PageProps<"/admin/meetings
             ) : (
               <Badge tone="neutral">Closed</Badge>
             )}
+            <Badge tone={meetingTypeInfo(meeting.type).tone}>{meetingTypeInfo(meeting.type).label}</Badge>
           </span>
         }
         subtitle={
@@ -220,7 +222,16 @@ export default async function MeetingPage({ params }: PageProps<"/admin/meetings
                 </Field>
               </>
             ) : null}
-            <Field label="Notes" className="sm:col-span-2">
+            <Field label="Type">
+              <select name="type" defaultValue={meeting.type} className={selectClass}>
+                {MEETING_TYPES.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Notes" className={isAdmin ? "sm:col-span-2" : ""}>
               <input name="notes" maxLength={500} defaultValue={meeting.notes ?? ""} className={inputClass} />
             </Field>
             <div className="sm:col-span-2">

@@ -4,11 +4,12 @@ import { getOpenMeeting } from "@/lib/attendance";
 import { requirePageUser } from "@/lib/authz";
 import { formatCutoff, isPastCutoff } from "@/lib/cutoff";
 import { env } from "@/lib/env";
+import { MEETING_TYPES, meetingTypeInfo } from "@/lib/meeting-type";
 import { getCurrentSeason } from "@/lib/queries";
 import { runSweep } from "@/lib/sweep";
 import { formatTime } from "@/lib/time";
 import { ActionForm, SubmitButton } from "@/components/action-form";
-import { inputClass, labelClass } from "@/components/ui";
+import { inputClass, labelClass, selectClass } from "@/components/ui";
 import { closeMeetingAction, startMeetingAction } from "../admin/meetings/actions";
 import { KioskClient } from "./kiosk-client";
 
@@ -53,6 +54,16 @@ export default async function KioskPage() {
                 <ActionForm action={startMeetingAction} className="mt-6 space-y-4">
                   <input type="hidden" name="goToKiosk" value="1" />
                   <label className="block">
+                    <span className={labelClass}>Type</span>
+                    <select name="type" defaultValue="regular" className={`${selectClass} mt-1.5 h-11 text-[15px]`}>
+                      {MEETING_TYPES.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block">
                     <span className={labelClass}>Notes (optional)</span>
                     <input name="notes" maxLength={500} placeholder="e.g. Build session" className={`${inputClass} mt-1.5 h-11 text-[15px]`} />
                   </label>
@@ -75,6 +86,7 @@ export default async function KioskPage() {
         <div className="flex min-h-[4.5rem] flex-wrap items-center justify-between gap-4 px-6 py-3 md:px-10">
           <p className="text-sm text-header-ink">
             Meeting started <span className="tabular font-medium text-white">{formatTime(meeting.startsAt, env.teamTimezone)}</span>
+            {meeting.type !== "regular" ? <span className="text-header-ink/80"> · {meetingTypeInfo(meeting.type).label}</span> : null}
             {meeting.notes ? <span className="text-header-ink/80"> · {meeting.notes}</span> : null}
             <span className="text-header-ink/60"> · Auto check-out at {formatCutoff(cutoff)}</span>
           </p>

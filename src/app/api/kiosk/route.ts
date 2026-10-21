@@ -47,6 +47,7 @@ export async function GET(req: NextRequest) {
         // Students: "First L." only — the kiosk is a public screen.
         name: displayName(a.user),
         image: a.user.image,
+        role: a.user.role,
         checkedInAt: a.checkin.checkedInAt.toISOString(),
         checkedOutAt: a.checkin.checkedOutAt?.toISOString() ?? null,
       })),

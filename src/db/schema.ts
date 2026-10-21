@@ -19,6 +19,9 @@ export type Role = (typeof roleEnum.enumValues)[number];
 export const themeEnum = pgEnum("theme", ["navy", "teal", "green", "purple", "red", "orange"]);
 export type Theme = (typeof themeEnum.enumValues)[number];
 
+export const meetingTypeEnum = pgEnum("meeting_type", ["regular", "competition", "outreach"]);
+export type MeetingType = (typeof meetingTypeEnum.enumValues)[number];
+
 const tsz = (name: string) => timestamp(name, { withTimezone: true, mode: "date" });
 
 /** Everyone who can sign in (students, mentors, admins). Roster == this table. */
@@ -68,6 +71,8 @@ export const meetings = pgTable(
     isOpen: boolean("is_open").notNull().default(true),
     openedBy: uuid("opened_by").references(() => users.id, { onDelete: "set null" }),
     notes: text("notes"),
+    /** For attendance analysis only — hours always count toward the season total regardless of type. */
+    type: meetingTypeEnum("type").notNull().default("regular"),
     createdAt: tsz("created_at").notNull().defaultNow(),
   },
   (t) => [

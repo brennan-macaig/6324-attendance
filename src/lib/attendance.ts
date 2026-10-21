@@ -1,5 +1,5 @@
 import { and, eq, inArray, isNull, lt, ne, not, sql } from "drizzle-orm";
-import { checkins, meetings, seasons, type Checkin, type Meeting } from "@/db/schema";
+import { checkins, meetings, seasons, type Checkin, type Meeting, type MeetingType } from "@/db/schema";
 import type { AnyDb } from "@/db/types";
 import { cutoffForDay, isPastCutoff, type DailyCutoff } from "./cutoff";
 import { computeCheckinFlags, FLAG } from "./flags";
@@ -181,7 +181,7 @@ export type OpenMeetingResult =
 
 export async function openMeeting(
   db: AnyDb,
-  input: { openedBy: string; notes?: string | null; cutoff?: DailyCutoff | null; now?: Date },
+  input: { openedBy: string; notes?: string | null; type?: MeetingType; cutoff?: DailyCutoff | null; now?: Date },
 ): Promise<OpenMeetingResult> {
   const existing = await getOpenMeeting(db);
   if (existing) return { status: "already_open", meeting: existing };
@@ -198,6 +198,7 @@ export async function openMeeting(
         isOpen: true,
         openedBy: input.openedBy,
         notes: input.notes || null,
+        type: input.type ?? "regular",
       })
       .returning();
     return { status: "opened", meeting };
