@@ -82,7 +82,7 @@ export function KioskClient({ meetingId, teamName, timeZone }: { meetingId: stri
   return (
     <div
       ref={rootRef}
-      className="relative flex min-h-[calc(100dvh-3.5rem-4.5rem)] flex-col gap-8 overflow-hidden bg-header px-6 py-6 text-white md:px-10 md:py-8 fullscreen:min-h-dvh fullscreen:gap-10 fullscreen:px-14 fullscreen:py-12"
+      className="relative flex h-[calc(100dvh-3.5rem-4.5rem)] flex-col gap-8 overflow-hidden bg-header px-6 py-6 text-white md:px-10 md:py-8 fullscreen:h-dvh fullscreen:gap-10 fullscreen:px-14 fullscreen:py-12"
     >
       {/* soft depth */}
       <div
@@ -113,7 +113,7 @@ export function KioskClient({ meetingId, teamName, timeZone }: { meetingId: stri
         </div>
       </div>
 
-      <div className="relative grid flex-1 items-stretch gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-12">
+      <div className="relative grid min-h-0 flex-1 items-stretch gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-12">
         {/* QR */}
         <div className="flex flex-col items-center justify-center gap-5">
           <div className="w-full max-w-[min(62vh,600px)] fullscreen:max-w-[min(68vh,760px)]">
@@ -171,7 +171,7 @@ export function KioskClient({ meetingId, teamName, timeZone }: { meetingId: stri
               ) : null}
             </div>
           </div>
-          <ul className="-mr-2 mt-5 grid flex-1 auto-rows-min grid-cols-1 content-start gap-2.5 overflow-y-auto pr-2 sm:grid-cols-2 [scrollbar-width:thin]">
+          <ul className="-mr-2 mt-5 grid min-h-0 flex-1 auto-rows-min grid-cols-1 content-start gap-2.5 overflow-y-auto pr-2 sm:grid-cols-2 [scrollbar-width:thin]">
             {here.map((a) => (
               <li
                 key={a.id}
